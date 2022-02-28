@@ -1,9 +1,7 @@
-import copy
 import csv
 import math
 import queue
 import time
-from math import e
 
 import numpy as np
 import pandas as pd
@@ -15,7 +13,6 @@ insight_type = ['Point', 'Shape']
 measures = []
 current_measure = ''
 time_dimension = ''
-# datasets = {}
 # 处理csv为df
 data_frame = None
 head = []
@@ -60,6 +57,7 @@ def SUM(subspace):
     subspace[breakdown] = '*'
     subspace_key = str({label: (label if subspace[label] != '*' else '*') for label in subspace.keys()})
     values_key = str([value for value in subspace.values() if value != '*'])
+    # TODO 此处for循环改为hash会快很多
     for item in sibling_cube[subspace_key][values_key][breakdown]:
         if item[0] == value:
             return item[1]
@@ -111,7 +109,7 @@ def construct_sibling_cube(df, headers, df_domain):
             # 遍历当前subspace中不为*的字段的所有取值
             if cuboid[0][index] != '*':
                 for value in df_domain[cuboid[0][index]]:
-                    temp_key = copy.deepcopy(current_key)
+                    temp_key = [item for item in current_key]
                     temp_key.append(value)
                     temp_df = current_df.loc[current_df[cuboid[0][index]] == value]
                     if not temp_df.empty:
@@ -134,7 +132,7 @@ def construct_sibling_cube(df, headers, df_domain):
 
 # 根据domain的大小进行排序
 def ordering_by_domain_size(headers, df_domain):
-    sorted_headers = copy.deepcopy(headers)
+    sorted_headers = [item for item in headers]
     return sorted(sorted_headers, key=lambda x: len(df_domain[x]))
 
 
@@ -197,14 +195,14 @@ def recur_extract(subspace, level, Ce):
         result_set = []
         breakdown = Ce[level][1]
         for v in domain[breakdown]:
-            temp_subspace = copy.deepcopy(subspace)
+            temp_subspace = {i: subspace[i] for i in subspace.keys()}
             temp_subspace[breakdown] = v
             measure_v = recur_extract(temp_subspace, level - 1, Ce)
             result_set.append((temp_subspace, measure_v))
         measure = calculate([i for i in result_set if i[1]], Ce[level], subspace)
         return measure
     else:
-        temp_subspace = copy.deepcopy(subspace)
+        temp_subspace = {i: subspace[i] for i in subspace.keys()}
         measure = SUM(temp_subspace)
         return measure
 
@@ -212,7 +210,7 @@ def recur_extract(subspace, level, Ce):
 def extract(subspace, breakdown, Ce):
     result_set = []
     for v in domain[breakdown]:
-        # temp_subspace = copy.deepcopy(subspace)
+        # TODO 40000+个城市，每次计算大约需要5min，全部算完大概需要3000多个小时，全部算完会更离谱
         temp_subspace = {i: subspace[i] for i in subspace.keys()}
         temp_subspace[breakdown] = v
         measure = recur_extract(temp_subspace, len(Ce) - 1, Ce)
@@ -221,12 +219,12 @@ def extract(subspace, breakdown, Ce):
 
 
 def get_impact(subspace):
-    # temp_subspace = copy.deepcopy(subspace)
     temp_subspace = {i: subspace[i] for i in subspace.keys()}
     return SUM(temp_subspace) / sum_all
 
 
 def get_sig(result_set, T):
+    # TODO Sig计算可能有些问题
     sig = 0
     result_copy = [item[1] for item in result_set if item[1] is not None]
     # 如果当前Insight没有结果集或者结果集过小，则sig为0
@@ -284,15 +282,16 @@ def get_probability_normal_distribution(x, mean, std):
 
 def enumerate_insight(subspace, breakdown, Ce):
     # enumerate all valid SG for current Ce
-    ubk = 0
     # 如果size比k小，则ubk为0，即无限制，若size为k则ubk取第k个insight的score
+    ubk = 0
+    imp = get_impact(subspace)
     if max_heap.qsize() >= k:
-        k_insight = max_heap.get()
-        max_heap.put(k_insight)
-        ubk = k_insight.score
+        kth_insight = max_heap.get()
+        max_heap.put(kth_insight)
+        ubk = kth_insight.score
+
     if is_valid(subspace, breakdown, Ce):
-        imp = get_impact(subspace)
-        if imp > ubk:
+        if imp > ubk and imp > 0.01:
             result_set = extract(subspace, breakdown, Ce)
             for T in insight_type:
                 sig = get_sig(result_set, T)
@@ -302,16 +301,16 @@ def enumerate_insight(subspace, breakdown, Ce):
                     # 将超出k的insight删除，只保留前k个，这样可以保证优先队列的排序效率
                     while max_heap.qsize() > k:
                         max_heap.get()
-    sorted_list = get_list_by_sibling_cube(subspace, breakdown)
-    for value in sorted_list:
-        # temp_subspace = copy.deepcopy(subspace)
-        temp_subspace = {i: subspace[i] for i in subspace.keys()}
-        # TODO 如果当前subspace的imp已经比upb小了，那么当前subspace的子空间是不是也没有计算的必要了？
-        temp_subspace[breakdown] = value[0]
-        subspace_sum = value[1]
-        for key in temp_subspace.keys():
-            if temp_subspace[key] == '*':
-                enumerate_insight(temp_subspace, key, Ce)
+    # TODO 如果当前subspace的imp已经比upb小了，那么当前subspace的子空间是不是也没有计算的必要了？
+    if imp > ubk and imp > 0.01:
+        sorted_list = get_list_by_sibling_cube(subspace, breakdown)
+        for value in sorted_list:
+            temp_subspace = {i: subspace[i] for i in subspace.keys()}
+            temp_subspace[breakdown] = value[0]
+            subspace_sum = value[1]
+            for key in temp_subspace.keys():
+                if temp_subspace[key] == '*':
+                    enumerate_insight(temp_subspace, key, Ce)
 
 
 def dfs_Ce(aggregation, combination, depth, level, Ce, Ces):
@@ -372,10 +371,6 @@ def insight(depth, insight_size, file_name, m, t):
     for col in head:
         values = list(data_frame[col].unique())
         domain[col] = values
-    print('Domain for ' + file_name)
-    for item in domain:
-        print(item, ':', domain[item])
-        print('Size:', len(domain[item]))
     # heap size k
     k = insight_size
     # for every single measure
@@ -401,8 +396,6 @@ def insight(depth, insight_size, file_name, m, t):
         # 对head进行sort，按照domain从小到大的顺序遍历每个字段
         ordered_dimensions = ordering_by_domain_size(head, domain)
         for Ce_current in Ce_list:
-            # if Ce_list.index(Ce_current) == 4:
-            #     break
             for dimension in ordered_dimensions:
                 print("Current Ce: " + str(Ce_list.index(Ce_current)))
                 print("Current dimension: " + str(ordered_dimensions.index(dimension)))
@@ -411,7 +404,7 @@ def insight(depth, insight_size, file_name, m, t):
         print("Current insight calculation finished. Time: " + str(time.perf_counter() - insight_time) + "s")
 
         insight_list = [max_heap.get() for _ in range(k)]
-        insight_file = open('result/' + file_name + '_depth_' + str(depth) + '.csv', 'w', encoding='utf-8', newline="")
+        insight_file = open('result/' + file_name + '_depth_' + str(depth) + str(current_measure) + '.csv', 'w', encoding='utf-8', newline="")
         csv_writer = csv.writer(insight_file)
         csv_writer.writerow(['Subspace', 'Breakdown', 'Ce', 'Insight_type', 'Sig', 'Imp', 'Score', 'Key', 'Value'])
 

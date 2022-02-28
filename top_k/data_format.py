@@ -1,9 +1,9 @@
 import csv
-fo = open("result/country_depth_2.txt", "r+")
+fo = open("../result/country_depth_2.txt", "r+")
 data = fo.read()
 data = data.replace("'", "")
 data = data.split("\n")
-insight_file = open('result/country_2.csv', 'w', encoding='utf-8', newline="")
+insight_file = open('../result/country_2.csv', 'w', encoding='utf-8', newline="")
 csv_writer = csv.writer(insight_file)
 csv_writer.writerow(['Subspace', 'Breakdown', 'Ce', 'Insight_type', 'Imp', 'Sig', 'Score', 'Key', 'Value'])
 for str in data:
