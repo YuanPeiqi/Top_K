@@ -1,0 +1,35 @@
+Subspace%{year:*,region:Middle East & North Africa,country:*}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:*,country:*}@Breakdown%region@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:2019,region:*,country:*}@Breakdown%region@Measure%count(country)@Insight_Type%Outstanding No.1
+Subspace%{year:*,region:North America,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:*,country:*}@Breakdown%year@Measure%count(country)@Insight_Type%Trend
+Subspace%{year:*,region:*,country:LeBanon}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:South America,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:1973,region:*,country:*}@Breakdown%region@Measure%count(country)@Insight_Type%Outstanding No.1
+Subspace%{year:1977,region:*,country:*}@Breakdown%region@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:Sub_Saharan Africa,country:*}@Breakdown%year@Measure%count(country)@Insight_Type%Trend
+Subspace%{year:*,region:Eastern Europe,country:*}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:1981,region:*,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:2017,region:*,country:*}@Breakdown%region@Measure%count(country)@Insight_Type%Outstanding No.1
+Subspace%{year:*,region:Southeast Asia,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:Middle East & North Africa,country:*}@Breakdown%year@Measure%count(country)@Insight_Type%Trend
+Subspace%{year:*,region:*,country:Greece}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:East Asia,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:1975,region:*,country:*}@Breakdown%region@Measure%count(country)@Insight_Type%Outstanding No.1
+Subspace%{year:1972,region:*,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:South Asia,country:*}@Breakdown%year@Measure%count(country)@Insight_Type%Trend
+Subspace%{year:*,region:*,country:Turkey}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:1983,region:*,country:*}@Breakdown%region@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:2010,region:*,country:*}@Breakdown%region@Measure%count(country)@Insight_Type%Outstanding No.1
+Subspace%{year:1972,region:*,country:*}@Breakdown%regoin@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:*,country:Italy}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:Central Asia,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:2007,region:*,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.1
+Subspace%{year:1973,region:*,country:*}@Breakdown%regoin@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:*,country:Israel}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:2008,region:*,country:*}@Breakdown%region@Measure%sum(count)@Insight_Type%Outstanding No.2
+Subspace%{year:2005,region:*,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Outstanding No.1
+Subspace%{year:*,region:Central America & Caribbean,country:*}@Breakdown%country@Measure%sum(count)@Insight_Type%Attribution
+Subspace%{year:*,region:*,country:Mexico}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:*,country:France}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier
+Subspace%{year:*,region:*,country:Pakistan}@Breakdown%year@Measure%sum(count)@Insight_Type%Outlier

@@ -231,16 +231,13 @@ def get_sig(result_set, T):
     if len(result_copy) <= 2:
         return 0
     if T == 'Point':
-        # 结果集只有两项，则计算差值绝对值与第二项绝对值的比值，映射到0-1
-        # if len(result_copy) == 2:
-        #     return 1 - (e ** abs(result_copy[0] - result_copy[1]) / abs(result_copy[1] / 3))
         temp_set = sorted(result_copy, reverse=True)
         x_max = float(temp_set[0])
         x_min = float(temp_set[len(temp_set) - 1])
-        if x_min <= 0:
-            # 将数据全部调整为正数
-            for i in range(len(temp_set)):
-                temp_set[i] += 1.5 * abs(x_min) + 1
+        # if x_min <= 0:
+        #     # 将数据全部调整为正数
+        #     for i in range(len(temp_set)):
+        #         temp_set[i] += 1.5 * abs(x_min) + 1
         y = []
         for i in range(1, len(temp_set)):
             y.append(temp_set[i])
